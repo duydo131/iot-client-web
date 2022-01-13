@@ -1,0 +1,100 @@
+body, html {
+    height: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.bg-nav-home {
+    background: rgba(148,187,233,1);
+}
+
+.bg-home {
+    background: linear-gradient(90deg, rgba(148,187,233,1) 14%, rgba(238,174,202,1) 100%)!important;
+}
+
+.bg-house {
+    background: linear-gradient(90deg, rgb(86, 103, 117) 14%, rgb(90, 74, 81) 100%)!important;
+}
+
+.bg-main {
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)!important;
+}
+
+.btn-custom {
+    width: 100%;
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)!important;
+}
+
+.btn-custom:hover {
+    color: white;
+}
+
+.btn-custom-register {
+    margin-left: 10%;
+    width: 80%;
+    background: radial-gradient(circle, rgb(174, 238, 185) 0%, rgb(59, 104, 155) 100%)!important;
+}
+
+.btn-custom-register:hover {
+    color: white;
+}
+
+.btn-nav {
+    width: 80%;
+    color: white;
+    background: rgb(113, 166, 226);
+}
+
+.btn-nav:hover {
+    background-color: rgb(77, 145, 223);
+}
+
+.avatar {
+    width: 40%;
+    height: fit-content;
+}
+
+.input-width {
+    width: 75px!important;
+}
+
+.header-house{
+    margin: auto;
+    display: inline;
+    font-size: 25px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.header-add{
+    size: 3em;
+    cursor: pointer;
+    float: right;   
+    height: 20px;
+    width: 20px;
+}
+
+.list-sub-header{
+    padding: auto;
+    height: 16%;
+    background: radial-gradient(circle, rgb(133, 130, 131) 0%, rgb(184, 196, 211) 100%)!important;
+}
+
+.house-item{
+    margin-left: 5%;
+    margin-right: 5%;
+    cursor: pointer;
+}
+
+.house-item:hover{
+    background-color: rgba(133, 130, 131, 20) ;
+}
