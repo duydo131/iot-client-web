@@ -23,24 +23,12 @@ const useStyles = makeStyles((theme) => ({
 export default function ListHouse() {
   const classes = useStyles();
 
-  const [houses, setHouses] = useState([
-    {
-      id: 1,
-      name: 'House1',
-    },
-    {
-      id: 2,
-      name: 'House2',
-    },
-    {
-      id: 3,
-      name: 'House3',
-    },
-    {
-      id: 4,
-      name: 'House4',
-    },
-  ])
+  const [houses, setHouses] = useState([])
+
+  const emptyHouse = [{
+    id: 0,
+    name: "Bạn chưa có nhà nào",
+  }]
 
   useEffect(() => {
     async function getHouses() {
@@ -48,7 +36,7 @@ export default function ListHouse() {
         method: 'GET',
         url: '/houses'
       });
-      const houses = res.data.data;
+      const houses = res.data;
       setHouses(houses);
     }
     getHouses()
@@ -63,8 +51,19 @@ export default function ListHouse() {
   }
 
   function genHouses() {
-    return houses.map((house, index) =>
-      <ListItem key={index} className="house-item" style={{ width: '90%' }} onClick={detailHouse}>
+    let housesNow = houses
+    let haveHouse = true
+    if(houses.length == 0){
+      haveHouse = false
+      housesNow = emptyHouse
+    } 
+    return housesNow.map((house, index) =>
+      <ListItem 
+        key={index} 
+        className="house-item" 
+        style={{ width: '90%' }} 
+        onClick={haveHouse ? detailHouse : () => {}}
+      >
         <ListItemText primary={house.name} />
       </ListItem>
     )

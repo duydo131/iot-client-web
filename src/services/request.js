@@ -5,7 +5,7 @@ const call_api = ({ url, method, data, params }) =>
     axios.create({
         baseURL: URL_API,
         headers: {
-            'Bearer': `${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
     })({
         method,

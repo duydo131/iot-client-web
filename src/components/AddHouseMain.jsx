@@ -262,18 +262,20 @@ export default function AddHouse() {
     if (deviceNows[deviceNows.length - 1].id === 0) {
       deviceNows.splice(-1, 1)
     }
-    console.log(deviceNows)
-    console.log(name)
+    console.log({
+      name,
+      sensors : deviceNows,
+    })
     const res = await call_api({
       method: 'POST',
       url: '/houses',
       data: {
         name,
-        sensors : deviceNows,
+        'sensors' : deviceNows,
       }
     });
-    const houses = res.data.data;
-    window.location = "/house"
+    // const houses = res.data.data;
+    // window.location = "/house"
 
   }
 

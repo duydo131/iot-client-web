@@ -52,8 +52,9 @@ function FormRegister() {
         });
 
         const { data } = res;
+        console.log(data)
 
-        if (data.code === 200) {
+        if (res.status === 200) {
             window.location = '/login';
         } else {
             setErrorMessage(data.data);

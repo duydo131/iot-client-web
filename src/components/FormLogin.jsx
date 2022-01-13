@@ -22,7 +22,7 @@ function FormLogin() {
     async function login() {
         const res = await call_api({
             method: 'POST',
-            url: '/login',
+            url: '/authenticate',
             data: {
                 username,
                 password
@@ -30,10 +30,10 @@ function FormLogin() {
         });
 
         const { data } = res;
-
-        if (data.code === 200) {
-            localStorage.setItem('token', data.data?.token);
-            localStorage.setItem('user', data.data?.username);
+        console.log(data)
+        if (res.status === 200) {
+            localStorage.setItem('token', data.accessToken);
+            localStorage.setItem('user', data.username);
             window.location = '/';
         } else {
             setErrorMessage(data.data);
