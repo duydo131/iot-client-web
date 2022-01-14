@@ -7,11 +7,13 @@ import Register from './pages/Register/Register';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { createContext, useContext } from 'react';
 import auth from "./services/auth";
+import { useDispatch, useSelector } from 'react-redux';
+import Toast from './components/Toast'
 
 const AuthContext = createContext();
 
 function ProvideAuth({ children }) {
-  const verify = auth();
+  const verify = useSelector(state => state.auth)
   return (
     <AuthContext.Provider value={verify}>
       {children}
@@ -20,7 +22,7 @@ function ProvideAuth({ children }) {
 }
 
 function PrivateRoute({ children }) {
-  const auth = useContext(AuthContext);
+  const auth = useSelector(state => state.auth)
   return (
     <Route render={() => auth ? (children) : <Redirect to="/login" />} />
   );
@@ -47,6 +49,7 @@ function App() {
             <Register />
           </Route>
         </Switch>
+          <Toast />
       </Router>
     </ProvideAuth>
   );

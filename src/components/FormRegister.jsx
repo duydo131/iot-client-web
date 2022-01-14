@@ -5,6 +5,7 @@ import { BiMailSend} from 'react-icons/bi';
 import { CgPassword } from 'react-icons/cg';
 import call_api from '../services/request';
 import validator from './../utils/validator';
+import {useHistory} from 'react-router-dom'
 
 
 function SlideTransition(props) {
@@ -12,6 +13,8 @@ function SlideTransition(props) {
 }
 
 function FormRegister() {
+    let history = useHistory()
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [resetPassword, setResetPassword] = useState('');
@@ -55,7 +58,7 @@ function FormRegister() {
         console.log(data)
 
         if (res.status === 200) {
-            window.location = '/login';
+           history.push('/login');
         } else {
             setErrorMessage(data.data);
             setOpen(true);
@@ -63,7 +66,7 @@ function FormRegister() {
     }
 
     function login() {
-        window.location = '/login';
+        history.push('/login');
     }
 
     return (

@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { GrAdd } from 'react-icons/gr';
 import call_api from '../services/request';
+import {useHistory} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ListHouse() {
+  let history = useHistory()
   const classes = useStyles();
 
   const [houses, setHouses] = useState([])
@@ -43,11 +45,11 @@ export default function ListHouse() {
   }, [])
 
   function addHomeHandlerOnlick() {
-    window.location = '/add-house'
+    history.push('/add-house')
   }
 
   function detailHouse() {
-    window.location = '/house'
+    history.push('/house')
   }
 
   function genHouses() {

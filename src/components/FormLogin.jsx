@@ -3,13 +3,21 @@ import { TextField, Grid, Snackbar, Slide } from '@material-ui/core';
 import { BiUserCircle } from 'react-icons/bi';
 import { CgPassword } from 'react-icons/cg';
 import call_api from '../services/request';
-
+import {useHistory} from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { actEnableToast } from './../action/index'
+import { actLogin } from './../action/index';
 
 function SlideTransition(props) {
     return <Slide {...props} direction="up" />;
 }
 
 function FormLogin() {
+    let history = useHistory()
+    const dispatch = useDispatch();
+    const signin = () => dispatch(actLogin());
+    const toast = (message) => dispatch(actEnableToast(message));
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [open, setOpen] = useState(false);
@@ -20,29 +28,31 @@ function FormLogin() {
     };
 
     async function login() {
-        const res = await call_api({
-            method: 'POST',
-            url: '/authenticate',
-            data: {
-                username,
-                password
+        try{
+            const res = await call_api({
+                method: 'POST',
+                url: '/authenticate',
+                data: {
+                    username,
+                    password
+                }
+            });
+    
+            const { data } = res;
+            if (res.status === 200) {
+                localStorage.setItem('token', data.accessToken);
+                localStorage.setItem('user', data.username);
+                toast("Đăng nhập thành công")
+                signin()
+                history.push('/');
             }
-        });
-
-        const { data } = res;
-        console.log(data)
-        if (res.status === 200) {
-            localStorage.setItem('token', data.accessToken);
-            localStorage.setItem('user', data.username);
-            window.location = '/';
-        } else {
-            setErrorMessage(data.data);
-            setOpen(true);
+        }catch(err){
+            toast(err?.response?.data?.title)
         }
     }
 
     function register() {
-        window.location = '/register';
+        history.push('/register')
     }
 
     return (

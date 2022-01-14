@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import { TextField, Grid, Snackbar, Slide, Button, InputLabel, MenuItem, FormControl } from '@material-ui/core';
 import call_api from '../services/request';
-
 import { AiFillDelete } from 'react-icons/ai';
 import { GrAdd, GrSubtractCircle, GrAddCircle } from 'react-icons/gr';
-
+import {useHistory} from 'react-router-dom'
 import ComfirmDialog from './ComfirmDialog'
+import { actEnableToast } from './../action/index'
+import { useDispatch } from 'react-redux';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '2%',
     margin: 'auto',
     width: '40%',
-    // height: '80%',
   },
   main: {
     width: '100%',
@@ -46,8 +45,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(4, 0, 2),
   },
   button: {
-    margin: theme.spacing(2),
-    width: '90%'
+    margin: theme.spacing(1),
+    marginLeft : '5%',
+    width: '90%',
   },
   icon: {
     marginTop: '10%',
@@ -57,56 +57,79 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SlideTransition(props) {
-  return <Slide {...props} direction="up" />;
-}
-
 export default function AddHouse() {
+  let history = useHistory()
+  const dispatch = useDispatch();
+  const toast = (message) => dispatch(actEnableToast(message));
+
   const classes = useStyles();
   let emptyDevice = {
     id: 0,
     name: "",
-    quantity: 1
+    quantity: 1,
+    isMulti: true,
   }
-  let constDevices = [
-    {
-      id: 0,
-      name: "",
-    },
-    {
-      id: 1,
-      name: "Device 1",
-    },
-    {
-      id: 2,
-      name: "Device 2",
-    },
-    {
-      id: 3,
-      name: "Device 3",
-    },
-    {
-      id: 4,
-      name: "Device 4",
-    },
-  ]
+  // const constDevices = [
+  //   {
+  //     id: 0,
+  //     name: "",
+  //     isMulti: true,
+  //   },
+  //   {
+  //     id: 1,
+  //     name: "Device 1",
+  //     isMulti: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Device 2",
+  //     isMulti: true,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Device 3",
+  //     isMulti: false,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Device 4",
+  //     isMulti: false,
+  //   },
+  // ]
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [open, setOpen] = useState(false);
+  const [constDevices, setConstDevices] = useState([])
   const [openDialog, setOpenDialog] = useState(false);
   const [messageNotification, setMessageNotification] = useState('')
-
-  const [devices, setDevices] = useState(constDevices)
+  const [devices, setDevices] = useState([])
   const [deviceNows, setDeviceNows] = useState([]);
   const [name, setName] = useState('');
-
-  function handleClose() {
-    setOpen(false);
-  };
 
   function handleCloseDialog() {
     setOpenDialog(false);
   };
+
+  useEffect(() => {
+    async function getAllSensors() {
+      try{
+        const res = await call_api({
+          method: 'GET',
+          url: '/sensor',
+        });
+        if(res.status === 200){
+          setConstDevices(res.data)
+          setDevices(res.data)
+        }
+      }catch(err){
+        if(err?.response == null){
+          toast("Error Server")
+          return
+        }
+        toast(err?.response?.data?.title)
+      }
+  
+    }
+    getAllSensors()
+  }, [])
 
   function handleChange(event, idx){
     const id = event.target.value;
@@ -120,6 +143,7 @@ export default function AddHouse() {
       if (index < 0) return;
       lastItem.id = devices[index].id;
       lastItem.name = devices[index].name;
+      lastItem.isMulti = devices[index].isMulti;
   
       devices.splice(index, 1);
       const newDevices = [...devices];
@@ -140,19 +164,21 @@ export default function AddHouse() {
       const itemAfter = devices[indexAfter]
 
       const newDeviceNows = [...deviceNows];
+      const isMulti = isMultiById(id)
       const newItemNow = {
         id: itemAfter.id,
         name: itemAfter.name,
-        quantity: itemNow.quantity,
+        quantity: isMulti ? itemNow.quantity: 1,
+        isMulti: isMulti,
       }
       newDeviceNows.splice(indexNow, 1, newItemNow)
-      console.log("devices now: ", newDeviceNows)
       setDeviceNows(newDeviceNows)
 
       const newDevices = [...devices];
       const newItemAfter = {
         id: itemNow.id,
         name: itemNow.name,
+        isMulti: itemNow.isMulti
       }
       newDevices.splice(indexAfter, 1, newItemAfter)
       newDevices.sort((d1, d2) => d1.id - d2.id)     
@@ -161,6 +187,13 @@ export default function AddHouse() {
       setDevices(newDevices)
     }
   };
+
+  function isMultiById(id){
+    for(let i = 0; i < constDevices.length; i++){
+      if(constDevices[i].id === id) return constDevices[i].isMulti
+    }
+    return false
+  }
 
   function generateChooseDevices() {
     return deviceNows.map((device) =>
@@ -201,8 +234,7 @@ export default function AddHouse() {
 
   function onClickHandler() {
     if (deviceNows.length === 4) {
-      setErrorMessage("Bạn đã chọn hết các thiết bị")
-      setOpen(true)
+      toast("Bạn đã chọn hết các thiết bị")
       return
     }
 
@@ -210,8 +242,7 @@ export default function AddHouse() {
     if (lengthDeviceNows > 0) {
       const lastItem = deviceNows[lengthDeviceNows - 1]
       if (lastItem.id === 0) {
-        setErrorMessage("Bạn chưa chọn loại thiết bị")
-        setOpen(true)
+        toast("Bạn chưa chọn loại thiết bị")
         return
       }
     }
@@ -226,9 +257,17 @@ export default function AddHouse() {
     const index = getIndexByIdOfCurrentDevices(id);
     if (index < 0) return;
 
+    if(id === 0){
+      const newDeviceNows = [...deviceNows];
+      newDeviceNows.splice(index, 1);
+      setDeviceNows(newDeviceNows);
+      return
+    }
+
     const resetDevice = {
       id: deviceNows[index].id,
       name: deviceNows[index].name,
+      isMulti: deviceNows[index].isMulti,
     }
 
     const newDeviceNows = [...deviceNows];
@@ -239,18 +278,19 @@ export default function AddHouse() {
     newDevices.push(resetDevice);
     newDevices.sort((d1, d2) => d1.id - d2.id)
     setDevices(newDevices);
+
+    console.log("devices: ", newDevices)
+    console.log("deviceNows",newDeviceNows)
   }
 
   function addHomeHandler() {
     if (deviceNows.length === 0) {
-      setErrorMessage("Bạn chưa chọn thiết bị trong nhà!")
-      setOpen(true)
+      toast("Bạn chưa chọn thiết bị trong nhà!")
       return
     }
 
     if(deviceNows.length === 1 && deviceNows[0].id === 0) {
-      setErrorMessage("Bạn chưa chọn thiết bị trong nhà!")
-      setOpen(true)
+      toast("Bạn chưa chọn thiết bị trong nhà!")
       return
     }
 
@@ -262,26 +302,39 @@ export default function AddHouse() {
     if (deviceNows[deviceNows.length - 1].id === 0) {
       deviceNows.splice(-1, 1)
     }
-    console.log({
-      name,
-      sensors : deviceNows,
-    })
-    const res = await call_api({
-      method: 'POST',
-      url: '/houses',
-      data: {
-        name,
-        'sensors' : deviceNows,
+    try{
+      const res = await call_api({
+        method: 'POST',
+        url: '/houses',
+        data: {
+          name,
+          'sensors' : deviceNows,
+        }
+      });
+      if(res.status === 200){
+        toast("Bạn đã thêm nhà thành công")
+        history.push("/")
       }
-    });
-    // const houses = res.data.data;
-    // window.location = "/house"
+    }catch(err){
+      if(err?.response == null){
+        toast("Error Server")
+        return
+      }
+      toast(err?.response?.data?.title)
+    }
 
   }
 
   function quantityDeviceHandler(id, quantity) {
     const index = getIndexByIdOfCurrentDevices(id)
     if (index < 0) return;
+
+    console.log("devices: ", devices)
+    console.log("deviceNows",deviceNows)
+    if(!(deviceNows[index].isMulti)) {
+      toast("Chỉ được chọn 1 thiết bị này trong nhà")
+      return
+    }
     const quantityOfDevice = deviceNows[index].quantity
 
     if (quantityOfDevice + quantity > 0) {
@@ -289,6 +342,8 @@ export default function AddHouse() {
       newDeviceNows[index].quantity = quantityOfDevice + quantity
       setDeviceNows(newDeviceNows)
     }
+
+
   }
 
   function generate() {
@@ -347,11 +402,11 @@ export default function AddHouse() {
       <ComfirmDialog />
       <div className={classes.div}>
         <div class={classes.main}>
-          <div className="list-sub-header pt-3 pb-3">
+          <div className="list-sub-header pt-2 pb-1">
             <h4 className="text-center">Thêm nhà</h4>
           </div>
-          <div className="ml-5">
-            <span><h5 className="mt-4">Tên nhà</h5></span>
+          <div className="ml-3">
+            <span style={{display: 'inline-block'}}><h5 className="mt-4">Tên nhà</h5></span>
           <TextField
             id="standard-basic"
             label="Tên nhà"
@@ -387,17 +442,6 @@ export default function AddHouse() {
           </Grid>
         </div>
       </div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        TransitionComponent={SlideTransition}
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        message={errorMessage}
-      />
       <ComfirmDialog
         open={openDialog}
         onClose={handleCloseDialog}
