@@ -54,6 +54,7 @@ export default function ListHouse() {
   }
 
   function detailHouse(id) {
+    localStorage.setItem('houseId', id);
     changeHouse(id)
     history.push('/house')
   }

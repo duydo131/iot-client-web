@@ -117,24 +117,24 @@ export default function AddHouse() {
 
   useEffect(() => {
     async function getAllSensors() {
-      // try{
-      //   const res = await call_api({
-      //     method: 'GET',
-      //     url: '/sensors',
-      //   });
-      //   if(res.status === 200){
-      //     setConstDevices(res.data)
-      //     setDevices(res.data)
-      //   }
-      // }catch(err){
-      //   if(err?.response == null){
-      //     toast("Error Server")
-      //     return
-      //   }
-      //   toast(err?.response?.data?.title)
-      // }
-      setConstDevices(constDevicesX)
-      setDevices(constDevicesX)
+      try{
+        const res = await call_api({
+          method: 'GET',
+          url: '/sensors',
+        });
+        if(res.status === 200){
+          setConstDevices(res.data)
+          setDevices(res.data)
+        }
+      }catch(err){
+        if(err?.response == null){
+          toast("Error Server")
+          return
+        }
+        toast(err?.response?.data?.title)
+      }
+      // setConstDevices(constDevicesX)
+      // setDevices(constDevicesX)
     }
     getAllSensors()
   }, [])
@@ -241,7 +241,7 @@ export default function AddHouse() {
   }
 
   function onClickHandler() {
-    if (deviceNows.length === 4) {
+    if (deviceNows.length === 5) {
       toast("Bạn đã chọn hết các thiết bị")
       return
     }
@@ -320,7 +320,8 @@ export default function AddHouse() {
         }
       });
       if(res.status === 200){
-        toast("Bạn đã thêm nhà thành công")
+        toast("Bạn đã thêm nhà thành công");
+        localStorage.setItem('houseId', res?.id);
         history.push("/")
       }
     }catch(err){
