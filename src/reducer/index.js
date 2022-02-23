@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import auth from './auth';
-// import admin from './admin';
+import house from './house';
 import toast from './toast';
 // import post from './post';
 
 const appReducers = combineReducers({
     auth,
-    // admin,
+    house,
     toast,
     // post,
 });

@@ -37,3 +37,10 @@ export const actChangePost = (id) => {
         id,
     }
 }
+
+export const actChangeHouse = (id) => {
+    return {
+        type: Types.CHANGE_HOUSE,
+        id,
+    }
+}

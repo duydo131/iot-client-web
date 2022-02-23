@@ -11,12 +11,12 @@ function SensorChart({data}) {
             loader={<div>Loading Chart</div>}
             data={data}
             options={{
-                title: 'Temperature / Humidity Chart',
+                title: 'Temperature / Humidity / Gas Chart',
                 hAxis: {
                     title: 'Time',
                 },
                 vAxis: {
-                    title: '% / C',
+                    title: '% / C / G',
                 },
                 series: {
                     0: { curveType: 'function' },

@@ -10,3 +10,4 @@ export const LOGIN = 'LOGIN';
 export const ENABLE_TOAST = 'ENABLE_TOAST';
 export const DISABLE_TOAST = 'DISABLE_TOAST';
 export const CHANGE_POST = 'CHANGE_POST'
+export const CHANGE_HOUSE = 'CHANGE_HOUSE'

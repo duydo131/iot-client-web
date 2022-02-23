@@ -7,6 +7,8 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import { GrAdd } from 'react-icons/gr';
 import call_api from '../services/request';
 import {useHistory} from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { actChangeHouse } from './../action/index'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
 export default function ListHouse() {
   let history = useHistory()
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const changeHouse = (id) => dispatch(actChangeHouse(id));
 
   const [houses, setHouses] = useState([])
 
@@ -48,7 +53,8 @@ export default function ListHouse() {
     history.push('/add-house')
   }
 
-  function detailHouse() {
+  function detailHouse(id) {
+    changeHouse(id)
     history.push('/house')
   }
 
@@ -64,7 +70,7 @@ export default function ListHouse() {
         key={index} 
         className="house-item" 
         style={{ width: '90%' }} 
-        onClick={haveHouse ? detailHouse : () => {}}
+        onClick={haveHouse ? () => detailHouse(house.id) : () => {}}
       >
         <ListItemText primary={house.name} />
       </ListItem>

@@ -67,35 +67,35 @@ export default function AddHouse() {
     id: 0,
     name: "",
     quantity: 1,
-    isMulti: true,
+    multi: true,
   }
-  // const constDevices = [
-  //   {
-  //     id: 0,
-  //     name: "",
-  //     isMulti: true,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: "Device 1",
-  //     isMulti: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Device 2",
-  //     isMulti: true,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Device 3",
-  //     isMulti: false,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Device 4",
-  //     isMulti: false,
-  //   },
-  // ]
+  const constDevicesX = [
+    {
+      id: 0,
+      name: "",
+      multi: true,
+    },
+    {
+      id: 1,
+      name: "Device 1",
+      multi: true,
+    },
+    {
+      id: 2,
+      name: "Device 2",
+      multi: true,
+    },
+    {
+      id: 3,
+      name: "Device 3",
+      multi: false,
+    },
+    {
+      id: 4,
+      name: "Device 4",
+      multi: false,
+    },
+  ]
 
   const [constDevices, setConstDevices] = useState([])
   const [openDialog, setOpenDialog] = useState(false);
@@ -108,12 +108,14 @@ export default function AddHouse() {
     setOpenDialog(false);
   };
 
+  
+
   useEffect(() => {
     async function getAllSensors() {
       try{
         const res = await call_api({
           method: 'GET',
-          url: '/sensor',
+          url: '/sensors',
         });
         if(res.status === 200){
           setConstDevices(res.data)
@@ -126,7 +128,8 @@ export default function AddHouse() {
         }
         toast(err?.response?.data?.title)
       }
-  
+      // setConstDevices(constDevicesX)
+      // setDevices(constDevicesX)
     }
     getAllSensors()
   }, [])
@@ -143,7 +146,7 @@ export default function AddHouse() {
       if (index < 0) return;
       lastItem.id = devices[index].id;
       lastItem.name = devices[index].name;
-      lastItem.isMulti = devices[index].isMulti;
+      lastItem.multi = devices[index].multi;
   
       devices.splice(index, 1);
       const newDevices = [...devices];
@@ -164,12 +167,12 @@ export default function AddHouse() {
       const itemAfter = devices[indexAfter]
 
       const newDeviceNows = [...deviceNows];
-      const isMulti = isMultiById(id)
+      const multi = multiById(id)
       const newItemNow = {
         id: itemAfter.id,
         name: itemAfter.name,
-        quantity: isMulti ? itemNow.quantity: 1,
-        isMulti: isMulti,
+        quantity: multi ? itemNow.quantity: 1,
+        multi: multi,
       }
       newDeviceNows.splice(indexNow, 1, newItemNow)
       setDeviceNows(newDeviceNows)
@@ -178,7 +181,7 @@ export default function AddHouse() {
       const newItemAfter = {
         id: itemNow.id,
         name: itemNow.name,
-        isMulti: itemNow.isMulti
+        multi: itemNow.multi
       }
       newDevices.splice(indexAfter, 1, newItemAfter)
       newDevices.sort((d1, d2) => d1.id - d2.id)     
@@ -188,9 +191,9 @@ export default function AddHouse() {
     }
   };
 
-  function isMultiById(id){
+  function multiById(id){
     for(let i = 0; i < constDevices.length; i++){
-      if(constDevices[i].id === id) return constDevices[i].isMulti
+      if(constDevices[i].id === id) return constDevices[i].multi
     }
     return false
   }
@@ -267,7 +270,7 @@ export default function AddHouse() {
     const resetDevice = {
       id: deviceNows[index].id,
       name: deviceNows[index].name,
-      isMulti: deviceNows[index].isMulti,
+      multi: deviceNows[index].multi,
     }
 
     const newDeviceNows = [...deviceNows];
@@ -331,7 +334,7 @@ export default function AddHouse() {
 
     console.log("devices: ", devices)
     console.log("deviceNows",deviceNows)
-    if(!(deviceNows[index].isMulti)) {
+    if(!(deviceNows[index].multi)) {
       toast("Chỉ được chọn 1 thiết bị này trong nhà")
       return
     }
@@ -392,6 +395,7 @@ export default function AddHouse() {
   }
 
   const handlerName = (e) => {
+    console.log(e.target.value)
     setName(e.target.value)
   }
 
@@ -408,7 +412,6 @@ export default function AddHouse() {
           <div className="ml-3">
             <span style={{display: 'inline-block'}}><h5 className="mt-4">Tên nhà</h5></span>
           <TextField
-            id="standard-basic"
             label="Tên nhà"
             value={name}
             style={{ width: '60%', marginLeft: '5%' }}
