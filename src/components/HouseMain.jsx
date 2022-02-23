@@ -207,11 +207,11 @@ function HomeMain() {
         // setDataGas({data: { nd: GAS_CONCENTRATION[-1].gasConcentration }});
 
         // const _dataChart = [[1,3,4,5],[2, 4,4,6],[3, 5,3,3],[4, 6,2,2],[5, 7,1,8]]
-        _dataChart.unshift(['lastModifiedDate', 'humidity', 'temperature', 'gas']);
+        _dataChart.unshift(['time', 'humidity', 'temperature', 'gas']);
         const _dataChart = [['time','humidity', 'temperature', 'concentration']]
         const min = Math.min(HUMIDITY.length, THERMOMETER.length, GAS_CONCENTRATION.length)
         for(let i = 0; i < min; i++){
-            _dataChart.push([HUMIDITY[i].time, HUMIDITY[i].hum, THERMOMETER[i].temp, GAS_CONCENTRATION[i].gasConcentration])
+            _dataChart.push([HUMIDITY[i].lastModifiedDate, HUMIDITY[i].hum, THERMOMETER[i].temp, GAS_CONCENTRATION[i].gasConcentration])
         }
 
         setDataChartHT(_dataChart);
