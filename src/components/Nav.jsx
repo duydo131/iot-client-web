@@ -16,6 +16,7 @@ function Nav() {
     function logout(){
         localStorage.setItem('token', '');
         localStorage.setItem('user', '');
+        localStorage.setItem('houseId', '');
         signout()
         toast("Đăng xuất thành công")
         history.push('/');

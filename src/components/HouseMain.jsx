@@ -164,7 +164,7 @@ function MQ5SensorBox({ data }) {
 }
 
 function HomeMain() {
-    var newHouse = useSelector(state => state.house)
+    var newHouse = useSelector(state => state.house);
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const handleClose = () => {
@@ -190,9 +190,10 @@ function HomeMain() {
     const [haveDoor, setIsDoor] = useState(false)
 
     async function getDataSensor() {
+        const houseId = localStorage.getItem('houseId');
         const res = await call_api({
             method: 'POST',
-            url: `/sensor-data-house/sensor/${newHouse.id}`
+            url: `/sensor-data-house/sensor/${houseId}`
         });
 
         const {THERMOMETER, LED, DOOR, GAS_CONCENTRATION, HUMIDITY} = res.data;
