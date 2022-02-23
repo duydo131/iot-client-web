@@ -77,23 +77,28 @@ export default function AddHouse() {
     },
     {
       id: 1,
-      name: "Device 1",
-      multi: true,
+      name: "Humidity",
+      multi: false,
     },
     {
       id: 2,
-      name: "Device 2",
-      multi: true,
+      name: "Thermometer",
+      multi: false,
     },
     {
       id: 3,
-      name: "Device 3",
+      name: "Gas Concentration",
       multi: false,
     },
     {
       id: 4,
-      name: "Device 4",
-      multi: false,
+      name: "LED",
+      multi: true,
+    },
+    {
+      id: 5,
+      name: "DOOR",
+      multi: true,
     },
   ]
 
@@ -112,24 +117,24 @@ export default function AddHouse() {
 
   useEffect(() => {
     async function getAllSensors() {
-      try{
-        const res = await call_api({
-          method: 'GET',
-          url: '/sensors',
-        });
-        if(res.status === 200){
-          setConstDevices(res.data)
-          setDevices(res.data)
-        }
-      }catch(err){
-        if(err?.response == null){
-          toast("Error Server")
-          return
-        }
-        toast(err?.response?.data?.title)
-      }
-      // setConstDevices(constDevicesX)
-      // setDevices(constDevicesX)
+      // try{
+      //   const res = await call_api({
+      //     method: 'GET',
+      //     url: '/sensors',
+      //   });
+      //   if(res.status === 200){
+      //     setConstDevices(res.data)
+      //     setDevices(res.data)
+      //   }
+      // }catch(err){
+      //   if(err?.response == null){
+      //     toast("Error Server")
+      //     return
+      //   }
+      //   toast(err?.response?.data?.title)
+      // }
+      setConstDevices(constDevicesX)
+      setDevices(constDevicesX)
     }
     getAllSensors()
   }, [])
